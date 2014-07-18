@@ -33,20 +33,22 @@
     	<script src="kendo/js/kendo.mobile.min.js"></script>
 
         <script src="angular/angular.min.js"></script>
+        <script src="js/everlive.all.min.js"></script>
+        <script src="js/spin.min.js"></script>
         
         <title>Dude App</title>
     </head>
     <body ng-app>
-        <div class="app" data-role="view" id="main">
+        <div class="app" data-role="view" id="home" ng-controller="HomeController">
             
             <div data-role="header"></div>
             
-            <ul class="list" ng-controller="HomeController">
+            <ul class="list" >
                 <li>
-                	<a ng-click="signup()">signup</a>
+                	<a ng-click="signup()" >signup</a>
                 </li>
                 <li>
-                    <a ng-click="login()">login</a>
+                    <a ng-click="login()" >login</a>
                 </li>
                 
                 <li>Dude</li>
@@ -55,27 +57,36 @@
            
         </div>
         
-        <div class="app" data-role="view" id="signup">
-              <ul class="list" ng-controller="HomeController">
+        <div class="app" data-role="view" id="signup" ng-controller="SignUpController">
+              <ul class="list" ng-init="init()">
                 <li>
-                	<a ng-click="signup()">Enter Username</a>
+                    <input type="text" placeholder="Choose Username" ng-model="username" />
                 </li>
                 <li>
-                    <a ng-click="login()">Enter password</a>
+                     <input type="number" placeholder="Choose Password" ng-model="password"/>
                 </li>
-                
-                <li>Tap To Signup</li>
-                
+                <li> 
+                    <a ng-click="signup($event)"><span>{{message}}</span></a>
+                    <div class="loader"/>
+                </li>
+                <li>
+                	<a ng-click="home()">Go Back</a> 
+                </li>
             </ul>
         </div>
         
         <div class="app" data-role="view" id="login">
                
         </div>
+            
+        <div class="app" data-role="view" id="main">
+               
+        </div>
         
         <script type="text/javascript" src="js/index.js"></script>
+        
         <script src="controllers/home.js"></script>
-
+		<script src="controllers/signup.js"></script>
        
     </body>
 </html>

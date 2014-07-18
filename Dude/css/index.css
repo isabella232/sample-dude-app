@@ -21,21 +21,25 @@ div.app ul.list{
 }
 
 div.app ul.list li{
-    
+    text-align:center;
     text-transform:uppercase;
 	font-weight:700;    
-    font-size:27px;
+    font-size:29px;
     padding:20px 10px;
-    
-}
-div.app ul.list li:first-child{
-    background-color:#abd363;  
+    position:relative;
 }
 
 div.app ul.list li:nth-child(even){
    background-color:#ff676a;  
 }
 
+div.app ul.list li:nth-child(odd){
+    background-color:#3598db;
+}
+
+div.app ul.list li:first-child{
+    background-color:#abd363;  
+}
 
 div.app ul.list li:last-child{
    background-color:#72c99c;  
@@ -46,3 +50,28 @@ div.app ul.list li a{
    color:#fff;
 }
 
+*::-webkit-input-placeholder {
+    font-weight:700;
+    color:#fff;
+}
+
+div.app ul.list li input{
+    text-align:center;
+    text-transform:uppercase;
+    width:100%;
+    background-color:transparent;
+    border:0px;
+    font-size:27px;
+    font-weight:700;
+    color:#fff;
+}
+
+
+div.loader{
+    background-color:transparent;
+    display:none;
+}
+
+.hidden{
+    visibility:hidden;
+}

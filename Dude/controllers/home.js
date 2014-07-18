@@ -7,4 +7,8 @@ function HomeController($scope, $http, $location){
     $scope.signup = function(){
 		 app.application.navigate("#signup", "slide:left");
     };
+    
+     $scope.home = function(){
+		 app.application.navigate("#home", "slide:right");
+    };
 }
