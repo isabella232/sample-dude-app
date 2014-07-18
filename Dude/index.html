@@ -57,8 +57,8 @@
            
         </div>
         
-        <div class="app" data-role="view" id="signup" ng-controller="SignUpController">
-              <ul class="list" ng-init="init()">
+        <div class="app" data-role="view" id="signup" ng-controller="AccountController">
+              <ul class="list" ng-init="init('#signup')">
                 <li>
                     <input type="text" placeholder="Choose Username" ng-model="username" />
                 </li>
@@ -75,8 +75,22 @@
             </ul>
         </div>
         
-        <div class="app" data-role="view" id="login">
-               
+        <div class="app" data-role="view" id="login" ng-controller="AccountController">
+            <ul class="list" ng-init="init('#login')">
+                <li>
+                    <input type="text" placeholder="Choose Username" ng-model="username" />
+                </li>
+                <li>
+                     <input type="number" placeholder="Choose Password" ng-model="password"/>
+                </li>
+                <li> 
+                    <a ng-click="login($event)"><span>{{message}}</span></a>
+                    <div class="loader"/>
+                </li>
+                <li>
+                	<a ng-click="home()">Go Back</a> 
+                </li>
+            </ul>
         </div>
             
         <div class="app" data-role="view" id="main">
@@ -86,7 +100,7 @@
         <script type="text/javascript" src="js/index.js"></script>
         
         <script src="controllers/home.js"></script>
-		<script src="controllers/signup.js"></script>
+		<script src="controllers/account.js"></script>
        
     </body>
 </html>

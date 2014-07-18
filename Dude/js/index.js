@@ -8,6 +8,7 @@
   	};
     
    	app.TAP_TO_SIGNUP = "Tap to Signup"; 
+    app.TAP_TO_LOGIN = "Tap to Login";
     
     document.addEventListener('deviceready', function () {
       StatusBar.hide();
