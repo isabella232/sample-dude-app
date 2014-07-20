@@ -1,6 +1,6 @@
 .km-ios7, .km-ios7.km-pane .km-content
 {
-     background-color:#343434; 
+     background-color:#343434;
      color:#fff;
 }
 
@@ -10,7 +10,7 @@
 }
 
 div.app{
-       
+
 }
 
 div.app ul.list{
@@ -23,14 +23,15 @@ div.app ul.list{
 div.app ul.list li{
     text-align:center;
     text-transform:uppercase;
-	font-weight:700;    
+	  font-weight:700;
     font-size:29px;
     padding:20px 10px;
     position:relative;
+    color :#fff;
 }
 
 div.app ul.list li:nth-child(even){
-   background-color:#ff676a;  
+   background-color:#ff676a;
 }
 
 div.app ul.list li:nth-child(odd){
@@ -38,11 +39,11 @@ div.app ul.list li:nth-child(odd){
 }
 
 div.app ul.list li:first-child{
-    background-color:#abd363;  
+    background-color:#abd363;
 }
 
 div.app ul.list li:last-child{
-   background-color:#72c99c;  
+   background-color:#72c99c;
 }
 
 div.app ul.list li a{
@@ -50,12 +51,15 @@ div.app ul.list li a{
    color:#fff;
 }
 
+
+
 *::-webkit-input-placeholder {
     font-weight:700;
     color:#fff;
 }
 
 div.app ul.list li input{
+    position:relative;
     text-align:center;
     text-transform:uppercase;
     width:100%;
@@ -66,6 +70,18 @@ div.app ul.list li input{
     color:#fff;
 }
 
+div.app ul.list li:last-child{
+  background-color:#0fc6dc !important;
+}
+
+.km-list input[type=text]:not(.k-input)
+{
+  position:relative;
+  font-size:27px !important;
+  width:100%;
+  right:0 !important;
+  padding:0;
+}
 
 div.loader{
     background-color:transparent;
