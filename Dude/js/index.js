@@ -39,40 +39,39 @@
       };
 
       $(document).on('click', 'a[href="/dude"]', function(e){
-	      var username = $(e.target).val();
-
-        var loader =  app.loader(e.target);
+	      
+        var username = $(e.target).text().trim();
+	    var loader =  app.loader(e.target);
 
         if (!$(e.target).hasClass('hidden')){
            $(e.target).addClass('hidden');
         }
-
+        
         loader.show();
 
         var el = new Everlive(app.everlive.apiKey);
+ 
+        var notification = {
+              "Filter":  "{ \"Parameters.Username\" : \"" + username.toUpperCase() + "\"}",
+              "Message":  username.toUpperCase()
+        };
+          
+        console.log(notification);
+        
+        var url = "http://api.everlive.com/v1/" + app.everlive.apiKey + "/Push/Notifications";
+          
+        $.post(url, notification).done(function(result){
+            console.log(result);
+            
+            loader.hide();
 
-        alert(username);
+            $(e.target).text("Sent!");
+            $(e.target).removeClass('hidden');
 
-        var conditions = {
-           "Parameters.Username" : "\"" +  username.toUpperCase() + "\""
-        }
-
-        el.push.notifications.create({
-            	"Filter": JSON.stringify(conditions),
-              "Message":username
-            }, function(data){
-                loader.hide();
-
-                $(e.target).val("Sent!");
-                $(e.target).removeClass('hidden');
-
-                window.setTimeout(function(){
-                 	$(e.target).val(username);
-                }, 1000);
-              },
-              function(error){
-                  appConsole.log(JSON.stringify(error));
-              });
+            window.setTimeout(function(){
+                $(e.target).text(username);
+            }, 1000);
+        });
 
         return false;
       });
