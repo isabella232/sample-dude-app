@@ -37,27 +37,20 @@
         };
 
         var onIosPushReceived = function (e) {
-        	// nothing here.
-        };
-
-        var pushSettings = {
-          	iOS: {
-                badge: "false",
-                sound: "true",
-                alert: "true"
-            },
-            notificationCallbackIOS: onIosPushReceived
+        	 alert('iOS notification received: ' + JSON.stringify(args));
         };
 
         var enablePushNotifications = function (username) {
             var el = new Everlive(app.everlive.apiKey);
             var currentDevice =  el.push.currentDevice(false);
 
+            app.username = username.toUpperCase();
+
             var customDeviceParameters = {
                 Username : username
             };
 
-            currentDevice.enableNotifications(pushSettings)
+            currentDevice.enableNotifications(app.pushSettings)
                   .then(
                       function (initResult) {
                         _onDeviceIsSuccessfullyInitialized();

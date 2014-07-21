@@ -23,11 +23,36 @@
 
       app.spinner = new Spinner({color:"#fff", width:3, className:'spin'}).spin();
 
+      app.requests =[];
+
       app.dataSource = new kendo.data.DataSource({
           data :[{
             name : "+"
           }]
       });
+
+      app.pushSettings = {
+          iOS: {
+              badge: "true",
+              sound: "true",
+              alert: "true"
+          },
+          notificationCallbackIOS: function(e){
+
+              var initialized = false;
+
+              for (var index = 0; index < app.requests.length; index++){
+                  if (app.requests[index ] === e.alert){
+                    initialized = true;
+                  }
+              }
+
+              if (!initialized){
+                app.dataSource.insert(0, {name: e.alert});
+                app.requests.push(e.alert);
+              }
+          }
+      };
 
       app.loader = function(el){
         var loader = $(el).next();
@@ -39,30 +64,35 @@
       };
 
       $(document).on('click', 'a[href="/dude"]', function(e){
-	      
+
         var username = $(e.target).text().trim();
-	    var loader =  app.loader(e.target);
+	      var loader =  app.loader(e.target);
 
         if (!$(e.target).hasClass('hidden')){
            $(e.target).addClass('hidden');
         }
-        
+
         loader.show();
 
         var el = new Everlive(app.everlive.apiKey);
- 
+
         var notification = {
               "Filter":  "{ \"Parameters.Username\" : \"" + username.toUpperCase() + "\"}",
-              "Message":  username.toUpperCase()
+              "IOS": {
+                "aps": {
+                    "alert": app.username,
+                    "sound": "default"
+              }
+            }
         };
-          
+
         console.log(notification);
-        
+
         var url = "http://api.everlive.com/v1/" + app.everlive.apiKey + "/Push/Notifications";
-          
+
         $.post(url, notification).done(function(result){
             console.log(result);
-            
+
             loader.hide();
 
             $(e.target).text("Sent!");
