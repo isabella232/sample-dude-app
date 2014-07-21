@@ -11,9 +11,11 @@
     app.TAP_TO_LOGIN = "Tap to Login";
 
     document.addEventListener('deviceready', function () {
-      StatusBar.hide();
 
       navigator.splashscreen.hide();
+
+      StatusBar.overlaysWebView(true);
+      StatusBar.hide();
 
       Keyboard.hideFormAccessoryBar(true);
 
@@ -37,7 +39,7 @@
       };
 
       $(document).on('click', 'a[href="/dude"]', function(e){
-	    var username = $(e.target).val();
+	      var username = $(e.target).val();
 
         var loader =  app.loader(e.target);
 
@@ -49,11 +51,16 @@
 
         var el = new Everlive(app.everlive.apiKey);
 
+        alert(username);
+
+        var conditions = {
+           "Parameters.Username" : "\"" +  username.toUpperCase() + "\""
+        }
+
         el.push.notifications.create({
-            	Message:'Dude',
-            	Filter: "{\"Parameters.Username\":\"" + username + "\"}"
-        	},
-            function(data){
+            	"Filter": JSON.stringify(conditions),
+              "Message":username
+            }, function(data){
                 loader.hide();
 
                 $(e.target).val("Sent!");
@@ -62,10 +69,10 @@
                 window.setTimeout(function(){
                  	$(e.target).val(username);
                 }, 1000);
-            },
-            function(error){
-                appConsole.log(JSON.stringify(error));
-            });
+              },
+              function(error){
+                  appConsole.log(JSON.stringify(error));
+              });
 
         return false;
       });
