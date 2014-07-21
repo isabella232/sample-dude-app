@@ -31,55 +31,30 @@
         var _onPushErrorOccurred = function (message) {
             appConsole.log("Error: " + message, true);
         };
-
-        var _processPushMessage = function (message, date) {
-            appConsole.log(date + " : " + message);
-        };
     
         var onAndroidPushReceived = function (e) {
-            var message = e.message;
-            _processPushMessage(message, new Date());
+            // nothing here
         };
     
-        var onWpPushReceived = function (e) {
-            if (e.type === "toast" && e.jsonContent) {
-                var message = e.jsonContent["wp:Text2"];
-                _processPushMessage(message, new Date());
-            }
-        }
-
         var onIosPushReceived = function (e) {
-            var message = e.alert;
-            var dateCreated = app.formatDate(e.dateCreated);
-
-            _processPushMessage(message, dateCreated);
+        	// nothing here.
         };
 
         var pushSettings = {
-            android: {
-                senderID: app.androidProjectNumber
-            },
-            iOS: {
+          	iOS: {
                 badge: "false",
                 sound: "true",
                 alert: "true"
             },
-            wp8: {
-                channelName: "Dude"
-            },
-            notificationCallbackWP8: onWpPushReceived,
-            notificationCallbackAndroid: onAndroidPushReceived,
-            notificationCallbackIOS: onIosPushReceived,
+            notificationCallbackIOS: onIosPushReceived
         };
 
         var enablePushNotifications = function () {
-            var devicePlatform = device.platform; // get the device platform from the Cordova Device API
-            appConsole.log("Initializing push notifications for " + devicePlatform + '...');
-
-            var currentDevice = app.everlive.push.currentDevice(app.constants.EMULATOR_MODE);
-
+            var el = new Everlive(app.everlive.apiKey);
+            var currentDevice =  el.push.currentDevice();
+            
             var customDeviceParameters = {
-                "LastLoginDate": new Date()
+                Username : app.username
             };
 
             currentDevice.enableNotifications(pushSettings)

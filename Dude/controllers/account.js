@@ -1,4 +1,8 @@
 function AccountController($scope, $http, $location){
+    var EMPTY = "";
+   
+    $scope.username = EMPTY;
+    $scope.password = EMPTY;
     
     $scope.init = function(id){
         if (id.toLowerCase() === "#login")
@@ -15,7 +19,12 @@ function AccountController($scope, $http, $location){
   
     $scope.signup = function($event){
       	$scope.spin($event);
-        $scope.el.Users.register($scope.username.toUpperCase(), $scope.password.toString(), null, function (data) {
+        
+        var username = $scope.username.trim().toUpperCase();
+        
+        app.currentUsername = username;
+        
+        $scope.el.Users.register(username, $scope.password.toString(), null, function (data) {
             app.application.navigate("#main", "slide:left");
         },
         function(error){
@@ -47,11 +56,13 @@ function AccountController($scope, $http, $location){
     
     $scope.login = function($event){
       	$scope.spin($event);
-        $scope.el.Users.login($scope.username.toUpperCase(), // username
+        
+        var username = $scope.username.trim().toUpperCase();
+       
+        $scope.el.Users.login(username, // username
             $scope.password, // password
             function (data) {
-                 console.log(data);
-            	 app.application.navigate("#main", "slide:left");
+                 app.application.navigate("#main", "slide:left");
             },
             function(error){
                 $scope.stop($event);
