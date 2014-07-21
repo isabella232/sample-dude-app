@@ -15,6 +15,8 @@
 
       navigator.splashscreen.hide();
 
+      Keyboard.hideFormAccessoryBar(true);
+
       app.application = new kendo.mobile.Application(document.body, {});
 
       app.spinner = new Spinner({color:"#fff", width:3, className:'spin'}).spin();
@@ -30,13 +32,13 @@
 
         if (loader.find('.spin').length == 0)
           loader.append(app.spinner.el);
-          
+
           return loader;
       };
 
       $(document).on('click', 'a[href="/dude"]', function(e){
 	    var username = $(e.target).val();
-          
+
         var loader =  app.loader(e.target);
 
         if (!$(e.target).hasClass('hidden')){
@@ -44,19 +46,19 @@
         }
 
         loader.show();
-          
+
         var el = new Everlive(app.everlive.apiKey);
-          
-        el.push.notifications.create({ 
+
+        el.push.notifications.create({
             	Message:'Dude',
             	Filter: "{\"Parameters.Username\":\"" + username + "\"}"
         	},
             function(data){
                 loader.hide();
-                
+
                 $(e.target).val("Sent!");
                 $(e.target).removeClass('hidden');
-                    
+
                 window.setTimeout(function(){
                  	$(e.target).val(username);
                 }, 1000);
