@@ -30,7 +30,7 @@
             name : "+"
           }]
       });
-
+      
       app.pushSettings = {
           iOS: {
               badge: "true",
@@ -41,8 +41,8 @@
 
               var initialized = false;
 
-              for (var index = 0; index < app.requests.length; index++){
-                  if (app.requests[index ] === e.alert){
+              for (var index = 0; index < app.dataSource.total(); index++){
+                  if (app.dataSource.at(index).name === e.alert){
                     initialized = true;
                   }
               }
