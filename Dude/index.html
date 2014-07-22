@@ -107,21 +107,32 @@
               <div class="loader"/>
             </script>
 
-            <script type="text/javascript">
-
-              function load(e){
-              }
-
-            </script>
-
         </div>
 
         <script type="text/javascript" src="js/index.js"></script>
 
         <script src="controllers/home.js"></script>
-		<script src="controllers/account.js"></script>
+		    <script src="controllers/account.js"></script>
         <script src="controllers/main.js"></script>
         <script src="js/push-registrar.js"></script>
         <script src="js/data.js"></script>
+
+        <script type="text/javascript">
+
+          function load(e){
+            var el = new Everlive(app.everlive.apiKey);
+            el.Users.currentUser()
+                .then(function (data) {
+                  var result = data.result;
+                  if (result != null){
+                    app.refreshFriendsList(result.Id);
+                  }
+                },
+                function(error){
+                    alert(JSON.stringify(error));
+                });
+          }
+
+        </script>
     </body>
 </html>

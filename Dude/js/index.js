@@ -29,19 +29,6 @@
           }]
       });
 
-      var el = new Everlive(app.everlive.apiKey);
-      el.Users.currentUser()
-          .then(function (data) {
-            var result = data.result;  
-            if (result != null){
-              app.refreshFriendsList(result.Id);
-            }
-          },
-          function(error){
-              alert(JSON.stringify(error));
-          });
-
-
       app.pushSettings = {
           iOS: {
               badge: "true",
