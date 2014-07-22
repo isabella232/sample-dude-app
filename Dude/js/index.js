@@ -123,11 +123,11 @@
                   .then(function(data){
                       $(e.target).removeClass('hidden');
                       if (data.count == 1){
+                          app.updateFriendsList();
+                          
                           app.dataSource.insert(0, {
                             name: username
                           });
-
-                          app.updateFriendsList(username);
 
                           $(e.target).val("");
                       }else{
