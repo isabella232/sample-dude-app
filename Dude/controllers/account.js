@@ -9,7 +9,7 @@ function AccountController($scope, $http, $location){
              $scope.message = app.TAP_TO_LOGIN;
         else
         	$scope.message = app.TAP_TO_SIGNUP;
-        $scope.el = new Everlive(app.everlive.apiKey);
+       
         $scope.loader = $(id).find('.loader');
 
         var spinner = new Spinner({color:"#fff", width:3}).spin();
@@ -22,7 +22,7 @@ function AccountController($scope, $http, $location){
 
         var username = $scope.username.trim().toUpperCase();
 
-        $scope.el.Users.register(username, $scope.password.toString(), null, function (data) {
+        app.el.Users.register(username, $scope.password.toString(), null, function (data) {
             app.PushRegistrar.enablePushNotifications(username);
             app.application.navigate("#main", "slide:left");
         },
@@ -58,7 +58,7 @@ function AccountController($scope, $http, $location){
 
         var username = $scope.username.trim().toUpperCase();
 
-        $scope.el.Users.login(username, // username
+        app.el.Users.login(username, // username
             $scope.password, // password
             function (data) {
                  app.PushRegistrar.enablePushNotifications(username);
