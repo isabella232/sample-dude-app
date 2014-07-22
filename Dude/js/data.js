@@ -10,14 +10,15 @@
             var result = data.result;
             if(result != null){
                 var data = app.el.data('Friends');
+                
+                console.log(result.Id);
 
                 data.get({ 'UserId': result.Id})
                   .then(function(data){
-                    if (data != null){
-                      var list = JSON.parse(data.Data);
-
-                      console.log(list);
-
+                    var result = data.result;
+                   
+                    if (result != null){
+                      var list = JSON.parse(result.Data);
                       for (var index = 0; index < list.length; index++){
                           app.dataSource.push(list[index]);
                       }
@@ -26,7 +27,6 @@
                   function(error){
                     console.log(JSON.stringify(error));
                 });
-              }
             }
           },
           function(error){
@@ -35,24 +35,41 @@
     };
 
     app.updateFriendsList = function(){
-        el.Users.currentUser()
+        app.el.Users.currentUser()
           .then(function(data){
-            var data = el.data('Friends');
-
-            console.log(JSON.parse(app.dataSource));
-
-            // data.update({ 'Data': JSON.string }, // data
-            //     { 'Author': 'Sample Text' }, // filter
-            //     function(data){
-            //         alert(JSON.stringify(data));
-            //     },
-            //     function(error){
-            //         alert(JSON.stringify(error));
-            //     });
-
-          }, function(error){
-            console.log(JSON.parse(error));
-          });
+            var data = app.el.data('Friends');
+              
+            data.get({UserId:data.result.Id})
+            .then(function(friends){
+              if (friends.length > 0){
+                data.update({'Data': JSON.stringify(app.dataSource.data())},
+                  {'UserId': data.result.Id},
+                  function(data){
+                       console.log(JSON.stringify(data));
+                  },
+                  function(error){
+                      console(JSON.stringify(error));
+                  });
+              }else{
+                 data.create({
+                     'Data': JSON.stringify(app.dataSource.data()),
+                     'UserId': data.result.Id
+                 },
+                 function(data){
+                     console.log(JSON.stringify(data));
+                 },
+                 function(error){
+                      console(JSON.stringify(error));
+                 });
+              }
+            },function(error){
+            	console.log(JSON.parse(error));
+            });
+          }
+      },
+      function(error){
+           
+      });
     }
 
 })(window);
