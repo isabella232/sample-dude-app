@@ -25,9 +25,9 @@
 
       app.spinner = new Spinner({color:"#fff", width:3, className:'spin'}).spin();
 
-      app.dataSource = new kendo.data.DataSource({
+       app.dataSource = new kendo.data.DataSource({
           data :[{
-            name : "+"
+              name : "+"
           }]
       });
 
@@ -42,14 +42,14 @@
               var initialized = false;
 
               for (var index = 0; index < app.dataSource.total(); index++){
-                  if (app.dataSource.at(index).name === e.alert){
+                  if (app.dataSource.at(index).name.toLowerCase() === e.alert.toLowerCase()){
                     initialized = true;
                   }
               }
 
               if (!initialized){
-                app.dataSource.insert(0, {name: e.alert});
-                app.requests.push(e.alert);
+                app.dataSource.insert(0, {name: e.alert.trim()});
+                app.updateFriendsList();
               }
           }
       };
@@ -66,7 +66,7 @@
       $(document).on('click', 'a[href="/dude"]', function(e){
 
         var username = $(e.target).text().trim();
-	    var loader =  app.loader(e.target);
+	      var loader =  app.loader(e.target);
 
         if (!$(e.target).hasClass('hidden')){
            $(e.target).addClass('hidden');
@@ -84,7 +84,7 @@
             }
         };
 
-        var url = "http://api.everlive.com/v1/" + app.everlive.apiKey + "/Push/Notifications";
+        var url = "http://api.everlive.com/v1/" + everlive.apiKey + "/Push/Notifications";
 
         $.post(url, notification).done(function(result){
             loader.hide();
@@ -123,13 +123,13 @@
                   .then(function(data){
                       $(e.target).removeClass('hidden');
                       if (data.count == 1){
-                          app.updateFriendsList();
-                          
                           app.dataSource.insert(0, {
                             name: username
                           });
 
                           $(e.target).val("");
+
+                          app.updateFriendsList();
                       }else{
                           $(e.target).val("Invalid User");
                           window.setTimeout(function(){

@@ -4,13 +4,14 @@
      color:#fff;
 }
 
+.km-android{
+   background-color:#343434;
+   outline:none;
+}
+
 .km-ios7 *{
    -webkit-background-clip: border-box;
    background-clip: border-box;
-}
-
-div.app{
-
 }
 
 div.app ul.list{
@@ -24,10 +25,15 @@ div.app ul.list li{
     text-align:center;
     text-transform:uppercase;
 	  font-weight:700;
-    font-size:29px;
+    font-size:35px;
     padding:20px 10px;
     position:relative;
     color :#fff;
+}
+
+div.app ul.list li.a{
+  font-size:35px;
+  padding:0px;
 }
 
 div.app ul.list li:nth-child(even){
@@ -65,9 +71,13 @@ div.app ul.list li input{
     width:100%;
     background-color:transparent;
     border:0px;
-    font-size:27px;
+    font-size:35px;
     font-weight:700;
     color:#fff;
+}
+
+.km-anroid input{
+  border:none;
 }
 
 div.app ul.list li:last-child{
@@ -77,10 +87,25 @@ div.app ul.list li:last-child{
 .km-list input[type=text]:not(.k-input)
 {
   position:relative;
-  font-size:27px !important;
+  font-size:35px !important;
   width:100%;
   right:0 !important;
   padding:0;
+}
+
+.km-android input[type=text]:not(.k-input)
+{
+  border:none;
+  outline:none;
+  padding:0;
+  background:none;
+}
+
+.km-android input[type=number]{
+  border:none;
+  outline:none;
+  padding:0;
+  background:none;
 }
 
 div.loader{

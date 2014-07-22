@@ -60,7 +60,7 @@
                         _onPushErrorOccurred(err.message);
                     }).then(
                       function(registration){
-                        el.push.currentDevice().updateRegistration(customDeviceParameters)
+                                    app.el.push.currentDevice().updateRegistration(customDeviceParameters)
                           then(
                             function (regData) {
                                 _onDeviceIsSuccessfullyRegistered();
@@ -70,7 +70,7 @@
 
                       },function(err){
                           if (err.code === 801){
-                            el.push.currentDevice().register(customDeviceParameters)
+                            app.el.push.currentDevice().register(customDeviceParameters)
                               then(
                                 function (regData) {
                                     _onDeviceRegistrationUpdated();
