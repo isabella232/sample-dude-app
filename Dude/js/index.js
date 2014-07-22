@@ -32,9 +32,9 @@
       var el = new Everlive(app.everlive.apiKey);
       el.Users.currentUser()
           .then(function (data) {
-            console.log(data);
-            if (data != null){
-              app.refreshFriendsList(data.Id);
+            var result = data.result;  
+            if (result != null){
+              app.refreshFriendsList(result.Id);
             }
           },
           function(error){
