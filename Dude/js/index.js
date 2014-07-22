@@ -131,6 +131,9 @@
                           app.dataSource.insert(0, {
                             name: username
                           });
+
+                          app.updateFriendsList(username);
+
                           $(e.target).val("");
                       }else{
                           $(e.target).val("Invalid User");
