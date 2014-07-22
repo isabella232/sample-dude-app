@@ -8,7 +8,7 @@
           .then(function (data) {
             console.log(data);
             var result = data.result;
-            if
+            if(result != null){
                 var data = app.el.data('Friends');
 
                 data.get({ 'UserId': result.Id})
@@ -26,6 +26,7 @@
                   function(error){
                     console.log(JSON.stringify(error));
                 });
+              }
             }
           },
           function(error){
