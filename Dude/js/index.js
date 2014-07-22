@@ -31,26 +31,37 @@
           }]
       });
 
+      app.notificationCallback = function(notification){
+        var initialized = false;
+
+        for (var index = 0; index < app.dataSource.total(); index++){
+            if (app.dataSource.at(index).name.toLowerCase() === notification.alert.toLowerCase()){
+              initialized = true;
+            }
+        }
+
+        if (!initialized){
+          app.dataSource.insert(0, {name: notification.alert.trim()});
+          app.updateFriendsList();
+        }
+      }
+
       app.pushSettings = {
           iOS: {
               badge: "true",
               sound: "true",
               alert: "true"
           },
+          android:{
+              senderID:"895584377110"
+          },
+          notificationCallbackAndroid: function(e){
+            app.notificationCallback({
+              alert : e.message
+            });
+          },
           notificationCallbackIOS: function(e){
-
-              var initialized = false;
-
-              for (var index = 0; index < app.dataSource.total(); index++){
-                  if (app.dataSource.at(index).name.toLowerCase() === e.alert.toLowerCase()){
-                    initialized = true;
-                  }
-              }
-
-              if (!initialized){
-                app.dataSource.insert(0, {name: e.alert.trim()});
-                app.updateFriendsList();
-              }
+            app.notificationCallback(e);
           }
       };
 
@@ -80,7 +91,11 @@
                 "aps": {
                     "alert": app.username,
                     "sound": "default"
-              }
+              },
+            },
+            "Android":{
+              "title":"Dude",
+              "message":app.username
             }
         };
 

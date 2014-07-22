@@ -57,7 +57,9 @@ div.app ul.list li a{
    color:#fff;
 }
 
-
+.km-android .km-listview-wrapper{
+  padding:0px;
+}
 
 *::-webkit-input-placeholder {
     font-weight:700;
@@ -107,6 +109,12 @@ div.app ul.list li:last-child{
   padding:0;
   background:none;
 }
+
+"Android":{
+
+}
+
+
 
 div.loader{
     background-color:transparent;
