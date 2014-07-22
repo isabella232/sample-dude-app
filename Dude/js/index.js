@@ -2,10 +2,12 @@
 
     var app = global.app = global.app || {};
 
-    app.everlive = {
+    var everlive = {
        apiKey: 'y4amUffZpy1LsFYg',
        scheme: 'http'
   	};
+
+    app.el = new Everlive(everlive.apiKey);
 
    	app.TAP_TO_SIGNUP = "Tap to Signup";
     app.TAP_TO_LOGIN = "Tap to Login";
@@ -64,15 +66,13 @@
       $(document).on('click', 'a[href="/dude"]', function(e){
 
         var username = $(e.target).text().trim();
-	      var loader =  app.loader(e.target);
+	    var loader =  app.loader(e.target);
 
         if (!$(e.target).hasClass('hidden')){
            $(e.target).addClass('hidden');
         }
 
         loader.show();
-
-        var el = new Everlive(app.everlive.apiKey);
 
         var notification = {
               "Filter":  "{ \"Parameters.Username\" : \"" + username.toUpperCase() + "\"}",
@@ -84,13 +84,9 @@
             }
         };
 
-        console.log(notification);
-
         var url = "http://api.everlive.com/v1/" + app.everlive.apiKey + "/Push/Notifications";
 
         $.post(url, notification).done(function(result){
-            console.log(result);
-
             loader.hide();
 
             $(e.target).text("Sent!");
@@ -104,18 +100,17 @@
         return false;
       });
 
+
       $(document).on('keypress', 'input[id="newuser"]', function(e){
         if (e.which == 13){
               var loader =  app.loader(e.target);
-
-              var el = new Everlive(app.everlive.apiKey);
 
               var username = $(e.target).val();
               var filter = new Everlive.Query();
 
               filter.where().eq('Username', username.toUpperCase());
 
-              var data = el.data('Users');
+              var data = app.el.data('Users');
 
               if (!$(e.target).hasClass('hidden')){
                  $(e.target).addClass('hidden');
