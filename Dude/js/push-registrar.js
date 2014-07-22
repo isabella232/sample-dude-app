@@ -41,8 +41,7 @@
         };
 
         var enablePushNotifications = function (username) {
-            var el = new Everlive(app.everlive.apiKey);
-            var currentDevice =  el.push.currentDevice(false);
+            var currentDevice =  app.el.push.currentDevice(false);
 
             app.username = username.toUpperCase();
 
