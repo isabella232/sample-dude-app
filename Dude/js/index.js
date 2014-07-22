@@ -23,14 +23,25 @@
 
       app.spinner = new Spinner({color:"#fff", width:3, className:'spin'}).spin();
 
-      app.requests =[];
-
       app.dataSource = new kendo.data.DataSource({
           data :[{
             name : "+"
           }]
       });
-      
+
+      var el = new Everlive(app.everlive.apiKey);
+      el.Users.currentUser()
+          .then(function (data) {
+            console.log(data);
+            if (data != null){
+              app.refreshFriendsList(data.Id);
+            }
+          },
+          function(error){
+              alert(JSON.stringify(error));
+          });
+
+
       app.pushSettings = {
           iOS: {
               badge: "true",
