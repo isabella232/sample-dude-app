@@ -6,7 +6,7 @@
     var el = new Everlive(app.everlive.apiKey);
 
     app.refreshFriendsList = function(userId){
-
+	  console.log(userId);
       var data = el.data('Friends');
 
       var filter = {
@@ -17,6 +17,8 @@
         .then(function(data){
           if (data != null){
             var list = JSON.parse(data.Data);
+              
+             console.log(list);
 
             for (var index = 0; index < list.length; index++){
                 app.dataSource.push(list[index]);
