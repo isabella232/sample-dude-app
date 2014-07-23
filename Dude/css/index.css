@@ -34,6 +34,7 @@ div.app ul.list li{
 div.app ul.list li.a{
   font-size:35px;
   padding:0px;
+  text-align:center;
 }
 
 div.app ul.list li:nth-child(even){
@@ -109,11 +110,6 @@ div.app ul.list li:last-child{
   padding:0;
   background:none;
 }
-
-"Android":{
-
-}
-
 
 
 div.loader{
