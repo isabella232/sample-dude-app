@@ -9,7 +9,7 @@ function AccountController($scope, $http, $location){
              $scope.message = app.TAP_TO_LOGIN;
         else
         	$scope.message = app.TAP_TO_SIGNUP;
-       
+
         $scope.loader = $(id).find('.loader');
 
         var spinner = new Spinner({color:"#fff", width:3}).spin();
@@ -23,8 +23,13 @@ function AccountController($scope, $http, $location){
         var username = $scope.username.trim().toUpperCase();
 
         app.el.Users.register(username, $scope.password.toString(), null, function (data) {
-            app.PushRegistrar.enablePushNotifications(username);
-            app.application.navigate("#main", "slide:left");
+            $scope.username = "";
+            $scope.password = "";
+            $scope.saveUser(function(){
+                $scope.stop($event);
+                app.PushRegistrar.enablePushNotifications(username);
+                app.application.navigate("#main", "slide:left");
+            });
         },
         function(error){
             $scope.stop($event);
@@ -60,9 +65,14 @@ function AccountController($scope, $http, $location){
 
         app.el.Users.login(username, // username
             $scope.password, // password
-            function (data) {
-                 app.PushRegistrar.enablePushNotifications(username);
-                 app.application.navigate("#main", "slide:left");
+            function (data){
+              $scope.username = "";
+              $scope.password = "";
+              $scope.saveUser(function(){
+                $scope.stop($event);
+                app.PushRegistrar.enablePushNotifications(username);
+                app.application.navigate("#main", "slide:left");
+              });
             },
             function(error){
                 $scope.stop($event);
@@ -79,7 +89,21 @@ function AccountController($scope, $http, $location){
             });
     };
 
+    $scope.saveUser = function(callback){
+        app.el.Users.currentUser()
+              .then(function (user) {
+                $http.put(app.cbLiteUrl + 'user/' + user.result.Username.trim(),{
+                    username : user.result.Username,
+                    uid: user.result.Id
+                  }).success(function(result){
+                    callback();
+                  }).error(function(err){
+                    alert(JSON.stringify(err));
+                  });
+            });
+    }
+
     $scope.home = function(){
-		 app.application.navigate("#home", "slide:right");
+		app.application.navigate("#home", "slide:right");
     };
 }

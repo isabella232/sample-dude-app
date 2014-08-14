@@ -1,17 +1,30 @@
+body{
+  -webkit-overflow-scrolling: touch;
+}
+
 .km-ios7, .km-ios7.km-pane .km-content
 {
      background-color:#343434;
      color:#fff;
 }
 
+
 .km-android{
    background-color:#343434;
    outline:none;
 }
 
+.km-android .km-content{
+   background-color:#343434;
+}
+
 .km-ios7 *{
    -webkit-background-clip: border-box;
    background-clip: border-box;
+}
+
+div.app{
+
 }
 
 div.app ul.list{
@@ -33,7 +46,6 @@ div.app ul.list li{
 
 div.app ul.list li.a{
   font-size:35px;
-  padding:0px;
   text-align:center;
 }
 
@@ -53,9 +65,22 @@ div.app ul.list li:last-child{
    background-color:#72c99c;
 }
 
+.km-button{
+  width: 100%;
+  padding: 10px;
+  background-clip: border-box;
+  background-color: transparent !important;
+}
+
+.km-button.km-back{
+  background-image: none !important;
+}
+
 div.app ul.list li a{
    text-decoration:none;
+   border:none;
    color:#fff;
+   padding: 0px;
 }
 
 .km-android .km-listview-wrapper{
@@ -79,6 +104,7 @@ div.app ul.list li input{
     font-size:35px;
     font-weight:700;
     color:#fff;
+    padding: 0px;
 }
 
 .km-anroid input{
@@ -87,6 +113,10 @@ div.app ul.list li input{
 
 div.app ul.list li:last-child{
   background-color:#0fc6dc !important;
+}
+
+div.app ul.list li.new{
+  background-color:#3598db !important;
 }
 
 .km-list input[type=text]:not(.k-input)

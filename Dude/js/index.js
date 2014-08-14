@@ -14,22 +14,70 @@
 
     document.addEventListener('deviceready', function () {
 
-      navigator.splashscreen.hide();
-
       StatusBar.overlaysWebView(true);
       StatusBar.hide();
+      if (typeof Keyboard !== 'undefined'){
+        Keyboard.hideFormAccessoryBar(true);
+      }
 
-      Keyboard.hideFormAccessoryBar(true);
+      app.initData = function(){
+          app.dataSource = new kendo.data.DataSource({
+              data :[]
+          });
+      };
 
-      app.application = new kendo.mobile.Application(document.body, {});
+      app.initData();
 
       app.spinner = new Spinner({color:"#fff", width:3, className:'spin'}).spin();
 
-       app.dataSource = new kendo.data.DataSource({
-          data :[{
-              name : "+"
-          }]
+
+      app.application = new kendo.mobile.Application($(document.body), {statusBarStyle: "hidden"
       });
+
+      function initializeDb(callback){
+         if (window.cblite){
+           window.cblite.getURL(function(err, url){
+             if (!err){
+                app.cbLiteUrl = url;
+                $.get(app.cbLiteUrl + 'user').done(function(result){
+                    callback();
+                }).fail(function(err){
+                    if (err.status === 404){
+                      $.ajax({
+                        url : app.cbLiteUrl + 'user',
+                        type: 'PUT'
+                      }).done(function(result){
+                          if (result.ok){
+                             callback();
+                          }
+                      }).fail(function(err){
+                          alert(JSON.stringify(err));
+                      });
+                    }
+                });
+              }
+           });
+         }
+        };
+
+       initializeDb(function(){
+          $.get(app.cbLiteUrl + 'user/_all_docs').done(function(result){
+              if (result.rows.length > 0){
+                  // do the user processing.
+                  app.Data.currentUser(function(user){
+                      if (user !== null){
+                          app.username = user.username;
+                          angular.bootstrap(document, []);
+                          app.application.navigate("#main", 'slide');
+                      }
+                  });
+              }
+              else{
+                  angular.bootstrap(document, []);
+                  navigator.splashscreen.hide();
+              }
+          });
+       });
 
       app.notificationCallback = function(notification){
         var initialized = false;
@@ -40,9 +88,9 @@
             }
         }
 
-        if (!initialized){
-          app.dataSource.insert(0, {name: notification.alert.trim()});
-          app.updateFriendsList();
+        if (!initialized && app.username.toUpperCase() !== notification.alert.trim()){
+          app.dataSource.insert(0, {name: notification.alert.trim().toUpperCase()});
+          app.Data.updateFriendsList();
         }
       }
 
@@ -74,6 +122,27 @@
           return loader;
       };
 
+      $(document).on('click', 'a[href="/invite"]', function(e){
+          navigator.contacts.pickContact(function(contact){
+                window.setTimeout(function(){
+                    if (contact.phoneNumbers.length){
+                      var messageInfo = {
+                        phoneNumber: contact.phoneNumbers[0].value,
+                        textMessage: "I want to Dude you. Download the app to get started"
+                      };
+
+                      sms.sendMessage(messageInfo, function(message) {
+                        console.log("success: " + message);
+                      }, function(error) {
+                        console.log("code: " + error.code + ", message: " + error.message);
+                      });
+                  }else{
+                    alert("Invalid Recipent" + contact.name.formatted);
+                  }
+                }, 500);
+            });
+      });
+
       $(document).on('click', 'a[href="/dude"]', function(e){
 
         var username = $(e.target).text().trim();
@@ -91,11 +160,15 @@
                 "aps": {
                     "alert": app.username,
                     "sound": "default"
-              },
+              }
             },
-            "Android":{
-              "title":"Dude",
-              "message":app.username
+            "Android": {
+                "data": {
+                    "title": "Dude",
+                    "message": app.username,
+                    "delay_while_idle" : "0",
+                    "collapse_key" : app.username
+                }
             }
         };
 
@@ -110,11 +183,31 @@
             window.setTimeout(function(){
                 $(e.target).text(username);
             }, 1000);
+        }, function(err){
         });
 
         return false;
       });
 
+      $(document).on('click', 'a[href="/logoff"]', function(e){
+          app.initData();
+          app.PushRegistrar.disablePushNotifications();
+
+          var docUrl = app.cbLiteUrl + 'user/' + app.username;
+
+          $.get(docUrl).done(function(result){
+            $.ajax({
+                url : docUrl + '?rev=' + result._rev,
+                type: 'DELETE',
+            }).done(function(result){
+                app.application.navigate("#home", "slide:right");
+            }).fail(function(err){
+                alert(JSON.stringify(err));
+            });
+          });
+
+          return false;
+      });
 
       $(document).on('keypress', 'input[id="newuser"]', function(e){
         if (e.which == 13){
@@ -144,7 +237,7 @@
 
                           $(e.target).val("");
 
-                          app.updateFriendsList();
+                          app.Data.updateFriendsList();
                       }else{
                           $(e.target).val("Invalid User");
                           window.setTimeout(function(){
