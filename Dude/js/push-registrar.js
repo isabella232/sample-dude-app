@@ -19,6 +19,10 @@
             console.log("Updating the device registration...");
         };
 
+        var _onDeviceIsNotInitialized = function(){
+            console.log("Device removed");
+        }
+
         var _onDeviceIsNotRegistered = function () {
             console.log("Device is not registered in Backend Services.");
             console.log("Registering the device in Backend Services...");
@@ -42,7 +46,6 @@
 
         var enablePushNotifications = function (username) {
             var currentDevice =  app.el.push.currentDevice(false);
-
             app.username = username.toUpperCase();
 
             var customDeviceParameters = {
@@ -81,8 +84,19 @@
                           _onPushErrorOccurred(err.message);
                       });
         };
+        var disablePushNotifications = function() {
+            app.el.push.currentDevice(false)
+                .disableNotifications()
+                .then(function(){
+                    _onDeviceIsNotInitialized();
+                },
+                function(err) {
+                    alert('UNREGISTER ERROR: ' + JSON.stringify(err));
+                });
+        };
         return {
-            enablePushNotifications : enablePushNotifications
+            enablePushNotifications : enablePushNotifications,
+            disablePushNotifications: disablePushNotifications
         }
     })();
 })(window);

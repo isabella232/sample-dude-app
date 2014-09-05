@@ -101,7 +101,9 @@
             <script type="text/x-kendo-template" id="list-template" >
               # if (name == '+'){ #
                   <input type="text" placeholder="+" id="newuser"/>
-              # }else{ #
+              # } else if (name == 'logoff'){ #
+                <a href="/logoff"> #:name# </a>
+              # } else { #
                  <a href="/dude"> #:name# </a>
               # } #
               <div class="loader"/>
@@ -110,19 +112,19 @@
            <script type="text/javascript">
 
               function load(e){
-                app.refreshFriendsList();
+                app.Data.refreshFriendsList();
               }
 
            </script>
 
         </div>
 
-        <script type="text/javascript" src="js/index.js"></script>
 
         <script src="controllers/home.js"></script>
 		<script src="controllers/account.js"></script>
         <script src="controllers/main.js"></script>
         <script src="js/push-registrar.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
         <script src="js/data.js"></script>
 
     </body>

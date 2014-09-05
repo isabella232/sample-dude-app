@@ -67,7 +67,7 @@
   "DeviceOrientations": [
     "Portrait"
   ],
-  "AndroidHardwareAcceleration": "false",
+  "AndroidHardwareAcceleration": "True",
   "iOSStatusBarStyle": "Hidden",
   "WP8SupportedResolutions": [
     "ID_RESOLUTION_WVGA",

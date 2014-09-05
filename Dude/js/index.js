@@ -14,12 +14,11 @@
 
     document.addEventListener('deviceready', function () {
 
-      navigator.splashscreen.hide();
-
       StatusBar.overlaysWebView(true);
       StatusBar.hide();
-
-      Keyboard.hideFormAccessoryBar(true);
+      if (typeof Keyboard !== 'undefined'){
+        Keyboard.hideFormAccessoryBar(true);
+      }
 
       app.application = new kendo.mobile.Application(document.body, {});
 
@@ -27,9 +26,13 @@
 
        app.dataSource = new kendo.data.DataSource({
           data :[{
+            name : 'logoff'
+          }, {
               name : "+"
           }]
       });
+
+      navigator.splashscreen.hide();
 
       app.notificationCallback = function(notification){
         var initialized = false;
@@ -40,9 +43,10 @@
             }
         }
 
-        if (!initialized){
+        if (!initialized && app.username !== notification.alert.trim()){
+
           app.dataSource.insert(0, {name: notification.alert.trim()});
-          app.updateFriendsList();
+          app.Data.updateFriendsList();
         }
       }
 
@@ -91,11 +95,15 @@
                 "aps": {
                     "alert": app.username,
                     "sound": "default"
-              },
+              }
             },
-            "Android":{
-              "title":"Dude",
-              "message":app.username
+            "Android": {
+                "data": {
+                    "title": "Dude",
+                    "message": app.username,
+                    "delay_while_idle" : "0",
+                    "collapse_key" : app.username
+                }
             }
         };
 
@@ -110,11 +118,16 @@
             window.setTimeout(function(){
                 $(e.target).text(username);
             }, 1000);
+        }, function(err){
         });
 
         return false;
       });
 
+      $(document).on('click', 'a[href="/logoff"]', function(e){
+          // app.PushRegistrar.disablePushNotifications();
+          app.application.navigate("#home", "slide:right");
+      });
 
       $(document).on('keypress', 'input[id="newuser"]', function(e){
         if (e.which == 13){
@@ -144,7 +157,7 @@
 
                           $(e.target).val("");
 
-                          app.updateFriendsList();
+                          app.Data.updateFriendsList();
                       }else{
                           $(e.target).val("Invalid User");
                           window.setTimeout(function(){
