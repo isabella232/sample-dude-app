@@ -11,19 +11,18 @@
         <script type="text/javascript" src="cordova.js"></script>
 
         <script src="kendo/js/jquery.min.js"></script>
-    	<script src="kendo/js/kendo.mobile.min.js"></script>
-
-        <script src="js/everlive.all.min.js"></script>
-        <script src="js/spin.min.js"></script>
+        <script src="kendo/js/kendo.mobile.min.js"></script>
 
         <script src="js/push-registrar.js"></script>
 
         <script src="js/data.js"></script>
 
-        <title>Dude App</title>
+        <script src="js/everlive.all.min.js"></script>
+
+    <title>Dude App</title>
     </head>
-    <body>
-        <div class="app" data-role="view" id="home" ng-controller="HomeController" data-transition="slide:right">
+    <body ng-app>
+        <div class="app" data-role="view" id="home" data-transition="slide:right">
 
             <div data-role="header"></div>
 
@@ -41,21 +40,49 @@
 
         </div>
 
-        <div class="app" data-role="view" id="main"  data-after-show="load" ng-controller="MainController">
+        <div class="app" data-role="view" id="main"  data-after-show="load" data-before-show="preLoad" ng-controller="MainController">
 
-            <ul id='listview' class="list" data-role="listview" data-template="list-template" data-source="app.dataSource">
+            <ul id='listview' class="list" >
 </ul>
 
             <script type="text/x-kendo-template" id="list-template" >
-              <a href="/dude"> #:name# </a>
-              <div class="loader"/>
+              <div class="wrapper">
+                <div class="action" data-role="touch" data-tap="app.events.tap">
+                  <div class="item-action">
+
+                    <a data-role="button" class="btn-action cacnel" >CANCEL</a>
+                    <a data-role="button" class="btn-action block" >BLOCK</a>
+                    <a data-role="button" class="btn-action delete" >DELETE</a>
+
+                  </div>
+
+                </div>
+                <div class="item" data-role="touch" data-drag="app.events.dragging" data-dragend="app.events.dragend">
+                    <a href="/dude" class='btn-action'  data-role="button"> #:name# </a>
+                    <div class="loader"/>
+                </div>
+              </div>
             </script>
 
            <script type="text/javascript">
 
+              function preLoad(e){
+                    $("#listview").kendoMobileListView({
+                        dataSource: app.dataSource,
+                        template: $("#list-template").html(),
+                    });
+              }
+
               function load(e){
                 app.Data.refreshFriendsList(function(){
                     navigator.splashscreen.hide();
+
+                    var data = app.el.data('Messages');
+
+                    data.get().then(function(data){
+                        app.inviteText = data.result[0].Description;
+                    });
+
                 });
               }
 
@@ -87,7 +114,7 @@
                     <div class="loader"/>
                 </li>
                 <li>
-                	<a href="#home" data-role="backbutton">Go Back</a>
+                	<a href="#home" data-role="button">Go Back</a>
                 </li>
             </ul>
         </div>
@@ -105,15 +132,16 @@
                     <div class="loader"/>
                 </li>
                 <li>
-                	<a href="#home" data-role="backbutton">Go Back</a>
+                	<a href="#home" data-role="button">Go Back</a>
                 </li>
             </ul>
         </div>
 
 
         <script src="angular/angular.min.js"></script>
-
         <script type="text/javascript" src="js/index.js"></script>
+
+        <script src="js/spin.min.js"></script>
 
         <script src="controllers/home.js"></script>
         <script src="controllers/account.js"></script>
