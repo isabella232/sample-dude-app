@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+
+        <link href="kendo/styles/kendo.mobile.all.min.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+
+        <script type="text/javascript" src="cordova.js"></script>
+
+        <script src="kendo/js/jquery.min.js"></script>
+        <script src="kendo/js/kendo.mobile.min.js"></script>
+
+        <script src="js/push-registrar.js"></script>
+
+        <script src="js/data.js"></script>
+
+        <script src="js/everlive.all.min.js"></script>
+
+    <title>Dude App</title>
+    </head>
+    <body ng-app>
+        <div class="app" data-role="view" id="home" data-transition="slide:right">
+
+            <div data-role="header"></div>
+
+            <ul class="list" >
+                <li>
+                    <a href="#signup" data-role="button">signup</a>
+                </li>
+                <li>
+                    <a href="#login" data-role="button">login</a>
+                </li>
+
+                <li>Dude</li>
+
+            </ul>
+
+        </div>
+
+        <div class="app" data-role="view" id="main"  data-after-show="load" data-before-show="preLoad" ng-controller="MainController">
+
+            <ul id='listview' class="list" >
+</ul>
+
+            <script type="text/x-kendo-template" id="list-template" >
+              <div class="item" data-role="touch" data-tap="app.events.tap">
+                  <a href="/dude"> #:name# </a>
+              </div>
+
+                <div class="loader" />
+            </script>
+
+           <script type="text/javascript">
+
+              function preLoad(e){
+                    $("#listview").kendoMobileListView({
+                        dataSource: app.dataSource,
+                        template: $("#list-template").html(),
+                    });
+              }
+
+              function load(e){
+                app.Data.refreshFriendsList(function(){
+                    navigator.splashscreen.hide();
+
+                    var data = app.el.data('Messages');
+
+                    data.get().then(function(data){
+                        app.inviteText = data.result[0].Description;
+                    });
+
+                });
+              }
+
+           </script>
+
+
+          <ul id='bottom-list' class="list">
+              <li>
+                <a href="/invite"> Invite </a>
+              </li>
+              <li>
+                <a href="/logoff"> logoff</a>
+              </li>
+              <li class="new">  <input type="text" placeholder="+" id="newuser"/></li>
+           </ul>
+
+        </div>
+
+        <div class="app" data-role="view" id="signup" ng-controller="AccountController" data-transition="slide">
+              <ul class="list km-scroll-wrapper" ng-init="init('#signup')">
+                <li>
+                    <input type="text" placeholder="Username" ng-model="username" />
+                </li>
+                <li>
+                     <input type="number" pattern="[0-9]*" placeholder="Password" ng-model="password"/>
+                </li>
+                <li>
+                    <a ng-click="signup($event)"><span>{{message}}</span></a>
+                    <div class="loader"/>
+                </li>
+                <li>
+                	<a href="#home" data-role="button">Go Back</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="app" data-role="view" id="login" ng-controller="AccountController" data-transition="slide">
+            <ul class="list" ng-init="init('#login')">
+                <li>
+                    <input type="text" placeholder="Username" ng-model="username" />
+                </li>
+                <li>
+                     <input type="number" pattern="[0-9]*" placeholder="Password" ng-model="password"/>
+                </li>
+                <li>
+                    <a ng-click="login($event)"><span>{{message}}</span></a>
+                    <div class="loader"/>
+                </li>
+                <li>
+                	<a href="#home" data-role="button">Go Back</a>
+                </li>
+            </ul>
+        </div>
+
+
+        <script src="angular/angular.min.js"></script>
+        <script src="js/spin.min.js"></script>
+
+        <script type="text/javascript" src="js/index.js"></script>
+
+        <script src="controllers/home.js"></script>
+        <script src="controllers/account.js"></script>
+        <script src="controllers/main.js"></script>
+
+    </body>
+</html>
