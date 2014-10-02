@@ -5,6 +5,7 @@ function AccountController($scope, $http, $location){
     $scope.password = EMPTY;
 
     $scope.init = function(id){
+
         if (id.toLowerCase() === "#login")
              $scope.message = app.TAP_TO_LOGIN;
         else
@@ -23,12 +24,12 @@ function AccountController($scope, $http, $location){
         var username = $scope.username.trim().toUpperCase();
 
         app.el.Users.register(username, $scope.password.toString(), null, function (data) {
-            $scope.username = "";
-            $scope.password = "";
-            $scope.saveUser(function(){
+            $scope.saveUser(data.result, function(){
                 $scope.stop($event);
                 app.PushRegistrar.enablePushNotifications(username);
                 app.application.navigate("#main", "slide:left");
+                $scope.username = "";
+                $scope.password = "";
             });
         },
         function(error){
@@ -66,12 +67,12 @@ function AccountController($scope, $http, $location){
         app.el.Users.login(username, // username
             $scope.password, // password
             function (data){
-              $scope.username = "";
-              $scope.password = "";
-              $scope.saveUser(function(){
+              $scope.saveUser(data.result, function(){
                 $scope.stop($event);
                 app.PushRegistrar.enablePushNotifications(username);
                 app.application.navigate("#main", "slide:left");
+                $scope.username = "";
+                $scope.password = "";
               });
             },
             function(error){
@@ -80,27 +81,34 @@ function AccountController($scope, $http, $location){
                     $scope.message = "Incorrect";
                 else
                     $scope.message = "Login Failed";
+
+                $scope.$apply();
+
                 window.setTimeout(function(){
                     $scope.message = app.TAP_TO_LOGIN;
                     $scope.$apply();
                 }, 1000);
-                console.log(JSON.stringify(error));
-                $scope.$apply();
             });
     };
 
-    $scope.saveUser = function(callback){
-        app.el.Users.currentUser()
-              .then(function (user) {
-                $http.put(app.cbLiteUrl + 'user/' + user.result.Username.trim(),{
-                    username : user.result.Username,
-                    uid: user.result.Id
-                  }).success(function(result){
+    $scope.saveUser = function(data, callback){
+        var userId = data.Id;
+        if (typeof(data.principal_id) != 'undefined')
+            userId = data.principal_id;
+
+        app.el.Users.getById(userId)
+            .then(function(data){
+                $http.put(app.cbLiteUrl + 'user/' + data.result.Username.trim(),{
+                    username : data.result.Username,
+                    uid: data.result.Id
+                }).success(function(result){
                     callback();
-                  }).error(function(err){
-                    alert(JSON.stringify(err));
-                  });
-            });
+                }).error(function(err){
+                    callback();
+                });
+        }, function(error){
+            alert(JSON.stringify(error));
+        });
     }
 
     $scope.home = function(){

@@ -46,22 +46,11 @@
 </ul>
 
             <script type="text/x-kendo-template" id="list-template" >
-              <div class="wrapper">
-                <div class="action" data-role="touch" data-tap="app.events.tap">
-                  <div class="item-action">
-
-                    <a data-role="button" class="btn-action cacnel" >CANCEL</a>
-                    <a data-role="button" class="btn-action block" >BLOCK</a>
-                    <a data-role="button" class="btn-action delete" >DELETE</a>
-
-                  </div>
-
-                </div>
-                <div class="item" data-role="touch" data-drag="app.events.dragging" data-dragend="app.events.dragend">
-                    <a href="/dude" class='btn-action'  data-role="button"> #:name# </a>
-                    <div class="loader"/>
-                </div>
+              <div class="item" data-role="touch" data-tap="app.events.tap">
+                  <a href="/dude"> #:name# </a>
               </div>
+
+                <div class="loader" />
             </script>
 
            <script type="text/javascript">
@@ -139,9 +128,9 @@
 
 
         <script src="angular/angular.min.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-
         <script src="js/spin.min.js"></script>
+
+        <script type="text/javascript" src="js/index.js"></script>
 
         <script src="controllers/home.js"></script>
         <script src="controllers/account.js"></script>

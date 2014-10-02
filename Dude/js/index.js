@@ -2,6 +2,7 @@
 
     var app = global.app = global.app || {};
 
+
     var everlive = {
        apiKey: 'y4amUffZpy1LsFYg',
        scheme: 'http'
@@ -11,6 +12,68 @@
 
    	app.TAP_TO_SIGNUP = "Tap to Signup";
     app.TAP_TO_LOGIN = "Tap to Login";
+
+    app.inviteText = "";
+
+    app.loader = function(el){
+      var loader = $(el).next();
+
+      if (loader.find('.spin').length == 0)
+        loader.append(app.spinner.el);
+
+        return loader;
+    };
+
+    app.events = {
+        tap: function(e) {
+          // // make sure the initial touch wasn't on the archive button
+          var target = e.touch.currentTarget;
+
+          var username = target.innerText.trim();
+          var loader =  app.loader(target);
+
+          if (!$(target).hasClass('hidden')){
+             $(target).addClass('hidden');
+          }
+
+          loader.show();
+
+          var notification = {
+                "Filter":  "{ \"Parameters.Username\" : \"" + username.toUpperCase() + "\"}",
+                "IOS": {
+                  "aps": {
+                      "alert": app.username,
+                      "sound": "/www/dude.wav"
+                }
+              },
+              "Android": {
+                  "data": {
+                      "title": "Dude",
+                      "message": app.username,
+                      "time_to_live": "0",
+                      "delay_while_idle" : "false",
+                      "collapse_key" : app.username,
+                      "soundname": "/assets/www/dude.wav"
+                  }
+              }
+          };
+
+          var url = "http://api.everlive.com/v1/" + everlive.apiKey + "/Push/Notifications";
+
+          $.post(url, notification).done(function(result){
+              loader.hide();
+
+              $(target).text("Sent!");
+              $(target).removeClass('hidden');
+
+              window.setTimeout(function(){
+                  $(target).text(username);
+              }, 1000);
+          }, function(err){
+
+          });
+        }
+      };
 
     document.addEventListener('deviceready', function () {
 
@@ -26,13 +89,13 @@
           });
       };
 
+      app.application = new kendo.mobile.Application($(document.body), {
+        statusBarStyle: "hidden"
+      });
+
       app.initData();
 
       app.spinner = new Spinner({color:"#fff", width:3, className:'spin'}).spin();
-
-
-      app.application = new kendo.mobile.Application($(document.body), {statusBarStyle: "hidden"
-      });
 
       function initializeDb(callback){
          if (window.cblite){
@@ -63,23 +126,23 @@
        initializeDb(function(){
           $.get(app.cbLiteUrl + 'user/_all_docs').done(function(result){
               if (result.rows.length > 0){
-                  // do the user processing.
-                  app.Data.currentUser(function(user){
-                      if (user !== null){
-                          app.username = user.username;
-                          angular.bootstrap(document, []);
-                          app.application.navigate("#main", 'slide');
-                      }
-                  });
+                $.get(app.cbLiteUrl + 'user/' + result.rows[0].id).done(function(result){
+                    if (result){
+                        app.username = result.username;
+                        app.application.navigate("#main", "slide:left");
+                    }
+                }).fail(function(err){
+                   navigator.splashscreen.hide();
+                });
               }
               else{
-                  angular.bootstrap(document, []);
                   navigator.splashscreen.hide();
               }
           });
        });
 
       app.notificationCallback = function(notification){
+
         var initialized = false;
 
         for (var index = 0; index < app.dataSource.total(); index++){
@@ -92,6 +155,10 @@
           app.dataSource.insert(0, {name: notification.alert.trim().toUpperCase()});
           app.Data.updateFriendsList();
         }
+
+        var media =  new Media(notification.sound);
+
+        media.play();
       }
 
       app.pushSettings = {
@@ -104,89 +171,44 @@
               senderID:"895584377110"
           },
           notificationCallbackAndroid: function(e){
+            var soundfile = e.soundname || e.payload.sound;
             app.notificationCallback({
-              alert : e.message
+              alert : e.message,
+              sound : soundfile
             });
           },
           notificationCallbackIOS: function(e){
-            app.notificationCallback(e);
+            app.notificationCallback({
+              alert: e.alert,
+              sound: e.sound
+            });
           }
       };
 
-      app.loader = function(el){
-        var loader = $(el).next();
-
-        if (loader.find('.spin').length == 0)
-          loader.append(app.spinner.el);
-
-          return loader;
-      };
 
       $(document).on('click', 'a[href="/invite"]', function(e){
           navigator.contacts.pickContact(function(contact){
                 window.setTimeout(function(){
-                    if (contact.phoneNumbers.length){
-                      var messageInfo = {
-                        phoneNumber: contact.phoneNumbers[0].value,
-                        textMessage: "I want to Dude you. Download the app to get started"
-                      };
+                    var to = contact.name.formatted;
 
-                      sms.sendMessage(messageInfo, function(message) {
-                        console.log("success: " + message);
-                      }, function(error) {
-                        console.log("code: " + error.code + ", message: " + error.message);
-                      });
-                  }else{
-                    alert("Invalid Recipent" + contact.name.formatted);
-                  }
+                    if (contact.phoneNumbers != null && contact.phoneNumbers.length > 0){
+                        to = contact.phoneNumbers[0].value;
+                    }
+
+                    var messageInfo = {
+                      phoneNumber: to,
+                      textMessage: app.inviteText
+                    };
+
+                    sms.sendMessage(messageInfo, function(message) {
+                      console.log("success: " + message);
+                    }, function(error) {
+                      navigator.notification.alert(error.message, null, "Dude");
+                    });
                 }, 500);
             });
-      });
 
-      $(document).on('click', 'a[href="/dude"]', function(e){
-
-        var username = $(e.target).text().trim();
-	      var loader =  app.loader(e.target);
-
-        if (!$(e.target).hasClass('hidden')){
-           $(e.target).addClass('hidden');
-        }
-
-        loader.show();
-
-        var notification = {
-              "Filter":  "{ \"Parameters.Username\" : \"" + username.toUpperCase() + "\"}",
-              "IOS": {
-                "aps": {
-                    "alert": app.username,
-                    "sound": "default"
-              }
-            },
-            "Android": {
-                "data": {
-                    "title": "Dude",
-                    "message": app.username,
-                    "delay_while_idle" : "0",
-                    "collapse_key" : app.username
-                }
-            }
-        };
-
-        var url = "http://api.everlive.com/v1/" + everlive.apiKey + "/Push/Notifications";
-
-        $.post(url, notification).done(function(result){
-            loader.hide();
-
-            $(e.target).text("Sent!");
-            $(e.target).removeClass('hidden');
-
-            window.setTimeout(function(){
-                $(e.target).text(username);
-            }, 1000);
-        }, function(err){
-        });
-
-        return false;
+          return false;
       });
 
       $(document).on('click', 'a[href="/logoff"]', function(e){
@@ -231,13 +253,21 @@
                   .then(function(data){
                       $(e.target).removeClass('hidden');
                       if (data.count == 1){
-                          app.dataSource.insert(0, {
-                            name: username
-                          });
 
+                          var found = false;
+
+                          for (var index = 0; index < app.dataSource.data().length; index++){
+                              if (username.toUpperCase() ===  app.dataSource.data()[index].name.toUpperCase()){
+                                found = true;
+                              }
+                          }
+                          if (!found){
+                            app.dataSource.insert(0, {
+                              name: username
+                            });
+                            app.Data.updateFriendsList();
+                          }
                           $(e.target).val("");
-
-                          app.Data.updateFriendsList();
                       }else{
                           $(e.target).val("Invalid User");
                           window.setTimeout(function(){
