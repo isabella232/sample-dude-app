@@ -5,5 +5,5 @@ Dude lets you send quick nudge to your friends through push notification service
 
 ## Dude is availble both in iOS and Android Store:
 
-[iOS](https://itunes.apple.com/us/app/dude-app/id917044642?ls=1&mt=8)
-[Android](https://play.google.com/store/apps/details?id=com.telerik.dude)
+- [iOS](https://itunes.apple.com/us/app/dude-app/id917044642?ls=1&mt=8)
+- [Android](https://play.google.com/store/apps/details?id=com.telerik.dude)
