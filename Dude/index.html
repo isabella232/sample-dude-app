@@ -1,22 +1,4 @@
 <!DOCTYPE html>
-<!--
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-     KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
--->
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -28,27 +10,28 @@
 
         <script type="text/javascript" src="cordova.js"></script>
 
-
         <script src="kendo/js/jquery.min.js"></script>
-    	  <script src="kendo/js/kendo.mobile.min.js"></script>
+        <script src="kendo/js/kendo.mobile.min.js"></script>
 
-        <script src="angular/angular.min.js"></script>
+        <script src="js/push-registrar.js"></script>
+
+        <script src="js/data.js"></script>
+
         <script src="js/everlive.all.min.js"></script>
-        <script src="js/spin.min.js"></script>
 
-        <title>Dude App</title>
+    <title>Dude App</title>
     </head>
     <body ng-app>
-        <div class="app" data-role="view" id="home" ng-controller="HomeController">
+        <div class="app" data-role="view" id="home" data-transition="slide:right">
 
             <div data-role="header"></div>
 
             <ul class="list" >
                 <li>
-                	<a ng-click="signup()" >signup</a>
+                    <a href="#signup" data-role="button">signup</a>
                 </li>
                 <li>
-                    <a ng-click="login()" >login</a>
+                    <a href="#login" data-role="button">login</a>
                 </li>
 
                 <li>Dude</li>
@@ -57,7 +40,57 @@
 
         </div>
 
-        <div class="app" data-role="view" id="signup" ng-controller="AccountController">
+        <div class="app" data-role="view" id="main"  data-after-show="load" data-before-show="preLoad" ng-controller="MainController">
+
+            <ul id='listview' class="list" >
+</ul>
+
+            <script type="text/x-kendo-template" id="list-template" >
+              <div class="item" data-role="touch" data-tap="app.events.tap">
+                  <a href="/dude"> #:name# </a>
+              </div>
+
+                <div class="loader" />
+            </script>
+
+           <script type="text/javascript">
+
+              function preLoad(e){
+                    $("#listview").kendoMobileListView({
+                        dataSource: app.dataSource,
+                        template: $("#list-template").html(),
+                    });
+              }
+
+              function load(e){
+                app.Data.refreshFriendsList(function(){
+                    navigator.splashscreen.hide();
+
+                    var data = app.el.data('Messages');
+
+                    data.get().then(function(data){
+                        app.inviteText = data.result[0].Description;
+                    });
+
+                });
+              }
+
+           </script>
+
+
+          <ul id='bottom-list' class="list">
+              <li>
+                <a href="/invite"> Invite </a>
+              </li>
+              <li>
+                <a href="/logoff"> logoff</a>
+              </li>
+              <li class="new">  <input type="text" placeholder="+" id="newuser"/></li>
+           </ul>
+
+        </div>
+
+        <div class="app" data-role="view" id="signup" ng-controller="AccountController" data-transition="slide">
               <ul class="list km-scroll-wrapper" ng-init="init('#signup')">
                 <li>
                     <input type="text" placeholder="Username" ng-model="username" />
@@ -70,12 +103,12 @@
                     <div class="loader"/>
                 </li>
                 <li>
-                	<a ng-click="home()">Go Back</a>
+                	<a href="#home" data-role="button">Go Back</a>
                 </li>
             </ul>
         </div>
 
-        <div class="app" data-role="view" id="login" ng-controller="AccountController">
+        <div class="app" data-role="view" id="login" ng-controller="AccountController" data-transition="slide">
             <ul class="list" ng-init="init('#login')">
                 <li>
                     <input type="text" placeholder="Username" ng-model="username" />
@@ -88,44 +121,20 @@
                     <div class="loader"/>
                 </li>
                 <li>
-                	<a ng-click="home()">Go Back</a>
+                	<a href="#home" data-role="button">Go Back</a>
                 </li>
             </ul>
         </div>
 
-        <div class="app" data-role="view" id="main"  data-after-show="load" ng-controller="MainController">
 
-            <ul id='listview' class="list" data-role="listview" data-template="list-template" data-source="app.dataSource">
-            </ul>
+        <script src="angular/angular.min.js"></script>
+        <script src="js/spin.min.js"></script>
 
-            <script type="text/x-kendo-template" id="list-template" >
-              # if (name == '+'){ #
-                  <input type="text" placeholder="+" id="newuser"/>
-              # } else if (name == 'logoff'){ #
-                <a href="/logoff"> #:name# </a>
-              # } else { #
-                 <a href="/dude"> #:name# </a>
-              # } #
-              <div class="loader"/>
-            </script>
-
-           <script type="text/javascript">
-
-              function load(e){
-                app.Data.refreshFriendsList();
-              }
-
-           </script>
-
-        </div>
-
+        <script type="text/javascript" src="js/index.js"></script>
 
         <script src="controllers/home.js"></script>
-		<script src="controllers/account.js"></script>
+        <script src="controllers/account.js"></script>
         <script src="controllers/main.js"></script>
-        <script src="js/push-registrar.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-        <script src="js/data.js"></script>
 
     </body>
 </html>

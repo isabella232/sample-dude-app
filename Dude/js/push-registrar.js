@@ -85,14 +85,14 @@
                       });
         };
         var disablePushNotifications = function() {
-            app.el.push.currentDevice(false)
+            app.el.push.currentDevice()
                 .disableNotifications()
-                .then(function(){
-                    _onDeviceIsNotInitialized();
-                },
-                function(err) {
-                    alert('UNREGISTER ERROR: ' + JSON.stringify(err));
-                });
+                .then(
+                    _onDeviceIsNotInitialized,
+                    function(err) {
+                        console.log('UNREGISTER ERROR: ' + JSON.stringify(err));
+                    }
+                );
         };
         return {
             enablePushNotifications : enablePushNotifications,
